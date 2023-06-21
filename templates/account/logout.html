@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}- Logout{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8 panel panel-default">
+        <div class="alert alert-info">로그아웃 하시겠습니까?</div>
+        <form method="post" action="/account/logout/">
+            {% csrf_token %}
+            <!--<input type="hidden" name="csrfmiddlewaretoken" value="6xMTPzkafQrPehG8UuGmaJ8Vo3O1XZUp8la2RPIQQKxQJ1zeDY1Lp6Z8W93nQzja">-->
+            <button class="btn btn-primary btn-sm" type="submit">로그아웃</button>
+            <a class="btn btn-danger btn-sm" href="/">뒤로 가기</a>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

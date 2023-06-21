@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Place Detail{% endblock %}
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-4">
+      <img src="{{place.image.url}}" width="300px">
+    </div>
+    <div class="col">
+      <h1 class="display-6">{{place.name}}
+      <form action="#" method="post">
+        {% csrf_token %}
+        <input type="submit" class="btn btn-primary btn-sm" id="likeButton" value="{% if place.is_liked %}Liked{% else %}Like-it{% endif %}">
+        <a href="{% url 'volunteer:place_all' %}" class="btn btn-danger btn-sm">Back</a>
+      </form></h1>
+      <h5><span class="badge badge-secondary">Description</span>{{place.description|linebreaks}}</h5>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    var likeButton = document.getElementById("likeButton");
+    var isLiked = localStorage.getItem("likedState_{{ place.id }}");
+    if (isLiked === "true") {
+      likeButton.value = "Liked";
+      likeButton.classList.add("liked");
+      updateLikedStateInList(true); // Update liked state in list.html
+    } else {
+      likeButton.value = "Like-it";
+      likeButton.classList.remove("liked");
+      updateLikedStateInList(false); // Update liked state in list.html
+    }
+  });
+
+  document.getElementById("likeButton").addEventListener("click", function(event) {
+    event.preventDefault();
+    var likeButton = document.getElementById("likeButton");
+    if (likeButton.value === "Like-it") {
+      likeButton.value = "Liked";
+      likeButton.classList.add("liked");
+      localStorage.setItem("likedState_{{ place.id }}", "true");
+      updateLikedStateInList(true); // Update liked state in list.html
+    } else {
+      likeButton.value = "Like-it";
+      likeButton.classList.remove("liked");
+      localStorage.setItem("likedState_{{ place.id }}", "false");
+      updateLikedStateInList(false); // Update liked state in list.html
+    }
+  });
+
+  function updateLikedStateInList(isLiked) {
+    var placeId = "{{ place.id }}";
+    var likedButtons = document.getElementsByClassName("liked-button-" + placeId);
+    for (var i = 0; i < likedButtons.length; i++) {
+      var button = likedButtons[i];
+      if (isLiked) {
+        button.classList.remove("hidden");
+      } else {
+        button.classList.add("hidden");
+      }
+    }
+  }
+</script>
+
+<style>
+  .liked {
+    background-color: green;
+  }
+
+  .hidden {
+    display: none;
+  }
+</style>
+
+{% endblock %}

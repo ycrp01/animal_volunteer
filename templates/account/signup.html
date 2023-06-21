@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}- Signup{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8 panel panel-default ">
+        <div class="alert alert-info">이미 계정이 있으신가요? 바로 <a class="btn btn-primary btn-sm" href="/account/login/">로그인</a> 하세요.</div>
+        <form class="signup" id="signup_form" method="post" action="/account/signup/">
+            {% csrf_token %}
+            <!--<input type="hidden" name="csrfmiddlewaretoken" value="k3Di83X7B4t8RaAbbotfruJLpgn9BRd3UZVtEiAH7itlrnsUsYtm7KgucujqlHjS">-->
+            <p><label for="id_username">아이디:</label> <input type="text" name="username" placeholder="아이디" autocomplete="username" minlength="1" maxlength="150" required="" id="id_username"></p>
+            <p><label for="id_email">이메일 (선택사항):</label> <input type="email" name="email" placeholder="이메일 주소" autocomplete="email" id="id_email"></p>
+            <p><label for="id_password1">비밀번호:</label> <input type="password" name="password1" placeholder="비밀번호" autocomplete="new-password" required="" id="id_password1"></p>
+            <p><label for="id_password2">비밀번호 (확인):</label> <input type="password" name="password2" placeholder="비밀번호 (확인)" autocomplete="new-password" required="" id="id_password2"></p>
+
+            <button class="btn btn-primary btn-sm" type="submit">회원가입</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Region Page{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-2"> <!-- col 2개 생성. -->
+        <div class="list-group"> <!-- category들을 list로 묶어서 div 생성. -->
+            <!-- category 선택이 없을 때 실행. href="/": 기본 실행 -->
+            <a href="/" class="list-group-item {% if not current_region %}active{% endif %}">전국</a>
+
+            <!-- regions에 있는 내용 하나씩 생성. -->
+            {% for c in regions %}
+            <!-- region 선택 시 이름과 함께 실행. -->
+            <a href="{{c.get_absolute_url}}" class="list-group-item {% if current_region.slug == c.slug %}active{% endif %}">{{c.name}}</a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="alert alert-info" role="alert">
+            <!-- 만약 region 선택했으면 그 region 이름으로 보여주고, 선택 안했으면 All Places 이름으로 보여주기. -->
+            {% if current_region %}{{current_region.name}}
+            {% else %} 전국 {% endif %}
+        </div>
+        <div class="row">
+            {% for place in places %}
+            <div class="col-4"> <!-- column 4개로 구성 -->
+                <div class="card">
+                    <img class="card-img-top" src="{{place.image.url}}" alt="Place image" width="300px" height="250px">
+                    <div class="card-body">
+                        <h5 class="card-title">{{place.name}}</h5>
+                        <a href="{{place.get_absolute_url}}" class="btn btn-primary">View Detail</a>
+                        <button id="likedButton-{{ place.id }}" class="btn btn-success liked-button-{{ place.id }} {% if place.is_liked %}visible{% else %}hidden{% endif %}">
+                            {% if place.is_liked %}Liked{% else %}Like-it{% endif %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    // Loop through all Liked buttons and attach click event listeners
+    var likedButtons = document.querySelectorAll("[id^='likedButton-']");
+    likedButtons.forEach(function(button) {
+      button.addEventListener("click", function(event) {
+        event.preventDefault();
+        var placeId = this.id.split("-")[1]; // Extract the place ID from the button ID
+        var isLiked = localStorage.getItem("likedState_" + placeId);
+        if (isLiked === "true") {
+          this.innerHTML = "Like-it";
+          this.classList.remove("liked");
+          localStorage.setItem("likedState_" + placeId, "false");
+        } else {
+          this.innerHTML = "Liked";
+          this.classList.add("liked");
+          localStorage.setItem("likedState_" + placeId, "true");
+        }
+      });
+    });
+  });
+
+  // Hide the Liked button in list.html when the liked state is "Like-it" in detail.html
+  function hideLikedButtonInList(placeId) {
+    var likedButton = document.getElementById("likedButton-" + placeId);
+    likedButton.classList.add("hidden");
+  }
+</script>
+
+<style>
+  .liked {
+    background-color: green;
+  }
+
+  .hidden {
+    display: none;
+  }
+</style>
+
+{% endblock %}
